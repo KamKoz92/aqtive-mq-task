@@ -1,29 +1,39 @@
-package com.epam.activemq;
+package com.github.kk.activemq;
 
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.UUID;
 
-public class VirtualSubscriber {
+public class Subscriber {
     public static void main(String[] args) throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 
         Connection connection = connectionFactory.createConnection();
-//        connection.setClientID("durable");
-
+        if (Arrays.asList(args).contains("durable")) {
+            connection.setClientID("durable");
+        } else {
+            connection.setClientID(UUID.randomUUID().toString());
+        }
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        String queueName = "Consumer." + args[0] + ".VirtualTopic.myVirtualTopic";
-        Queue queue = session.createQueue(queueName);
 
-        MessageConsumer consumer = session.createConsumer(queue);
+        Topic topic = session.createTopic("myTopic");
+
+        MessageConsumer consumer;
+        if (Arrays.asList(args).contains("durable")) {
+            consumer = session.createDurableSubscriber(topic, "mySubscriber");
+        } else {
+            consumer = session.createConsumer(topic);
+        }
+
         consumer.setMessageListener(message -> {
             if (message instanceof TextMessage textMessage) {
                 try {
-                    System.out.println("Received: " + textMessage.getText());
+                    System.out.println("Received: " + textMessage.getJMSMessageID() + ": " + textMessage.getText());
                 } catch (JMSException e) {
                     System.err.println(e.getMessage());
                 }

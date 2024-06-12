@@ -1,4 +1,4 @@
-package com.epam.activemq;
+package com.github.kk.activemq;
 
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
