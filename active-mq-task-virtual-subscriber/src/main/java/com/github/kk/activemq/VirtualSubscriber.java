@@ -5,13 +5,14 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class VirtualSubscriber {
     public static void main(String[] args) throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 
         Connection connection = connectionFactory.createConnection();
-//        connection.setClientID("durable");
+        connection.setClientID(UUID.randomUUID().toString());
 
         connection.start();
 

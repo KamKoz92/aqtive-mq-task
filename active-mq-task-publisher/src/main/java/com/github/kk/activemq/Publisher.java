@@ -16,7 +16,7 @@ public class Publisher {
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        Destination destination = session.createTopic("VirtualTopic.myTopic");
+        Destination destination = session.createTopic("myTopic");
         MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         Scanner scanner = new Scanner(System.in);
